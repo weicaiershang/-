@@ -37,4 +37,55 @@
 数组只适合存储完全二叉树（满二叉树是完全二叉树的一种），按层次遍历树，依次存储即可。
 数组存储普通二叉树，需要将空的位置补零，会造成存储空间的浪费。
 
+/*****************************二叉树的先序遍历*****************/
+先序遍历指的是先遍历树的左子树，再遍历右子树。包括递归遍历和栈遍历两种方法（递归本质上也是栈的使用，不过是操作系统完成的栈使用）
+1、递归遍历：思路是判断该节点是否为空，不为空则输出值，然后将左子树作为形参，递归调用本函数，之后将右子树作为形参，递归调用本函数。
+void preOrderTraverse(BiTree tree){
+    if(tree){
+        displayData(tree);
+        preOrderTraverse(tree->lChild);
+        preOrderTraverse(tree->rChild);
+    }
+}
+
+2、栈遍历：思路是先将根节点入栈，然后循环节点出栈，进入循环遍历节点，判断节点的右子树是否为空，不为空则入栈，然后节点指针指向左子树，循环输出。
+void push(BiTNode **a, BiTNode *tree){
+    a[++top] = tree;
+}
+
+
+BiTNode * pop(BiTNode **a){
+    if(-1 == top)
+    {
+        return NULL;
+    }
+    BiTNode *p = a[top];
+    top--;
+    return p;
+}
+
+/************************
+* 大循环以栈为基调，负责出栈
+* 小循环以遍历节点为基调，输出信息，入栈右子树，指向左子树
+* 先遍历节点，再出栈右子树，持续遍历节点
+* 所以程序如下（由内循环想外训话想比较容易接受）
+* **********************/
+void preOrderTraverseWithStack(BiTree tree){
+    BiTNode *a[20] = {NULL};
+    BiTNode *p;
+    push(a, tree);
+    while (-1 != top)           //这里不能用while（p）替换，否则内外循环操作同一个指针，会漏
+    {
+        p = pop(a);
+        while(p){
+            displayData(p);
+            if(p->rChild){
+                push(a, p->rChild);
+            }
+            p = p->lChild;
+        }
+    }
+    
+}
+
 
